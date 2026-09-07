@@ -33,3 +33,5 @@ jobs:
         run: |
           gcloud auth list --filter=status:ACTIVE
           gcloud projects describe ${project_id} --format='value(projectId)'
+
+# Trusted repository: ${repository}

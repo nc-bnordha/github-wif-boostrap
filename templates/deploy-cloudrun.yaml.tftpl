@@ -3,10 +3,6 @@ name: Deploy sample to Cloud Run
 on:
   workflow_dispatch:
 
-  push:
-    branches:
-      - ${allowed_branch}
-
 permissions:
   contents: read
   id-token: write
@@ -34,6 +30,13 @@ jobs:
           region: ${cloud_run_region}
           service: ${cloud_run_service}
           image: ${cloud_run_image}
+          flags: >-
+            --service-account=${runtime_service_account}
+            --allow-unauthenticated
 
       - name: Show service URL
-        run: echo "Service URL: ${{ steps.deploy.outputs.url }}"
+        run: |
+          echo "Service URL: $${{ steps.deploy.outputs.url }}"
+          curl --fail "$${{ steps.deploy.outputs.url }}"
+
+# Trusted repository: ${repository}
