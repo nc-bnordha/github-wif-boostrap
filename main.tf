@@ -1,6 +1,11 @@
 locals {
   repository = "${var.github_owner}/${var.github_repository}"
 
+  workflow_templates = {
+    verify   = "${path.module}/templates/workload.verify.yaml.tftpl"
+    cloudrun = "${path.module}/templates/workload.cloudrun.yaml.tftpl"
+  }
+
   required_services = toset([
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
@@ -76,11 +81,14 @@ resource "google_project_iam_member" "deployment_roles" {
 resource "local_file" "workflow" {
   filename = "${path.module}/${var.workflow_output_path}"
 
-  content = templatefile("${path.module}/workload.yaml.tftpl", {
-    project_id                 = var.target_project_id
-    repository                 = local.repository
-    allowed_branch             = trimprefix(var.allowed_ref, "refs/heads/")
+  content = templatefile(local.workflow_templates[var.workflow_type], {
+    project_id                  = var.target_project_id
+    repository                  = local.repository
+    allowed_branch              = trimprefix(var.allowed_ref, "refs/heads/")
     workload_identity_provider = google_iam_workload_identity_pool_provider.github.name
-    service_account            = google_service_account.github_deployer.email
+    service_account             = google_service_account.github_deployer.email
+    cloud_run_service           = var.cloud_run_service
+    cloud_run_region            = var.cloud_run_region
+    cloud_run_image             = var.cloud_run_image
   })
 }

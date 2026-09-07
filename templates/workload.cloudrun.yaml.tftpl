@@ -1,4 +1,4 @@
-name: Verify Google Cloud authentication
+name: Deploy sample to Cloud Run
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ permissions:
   id-token: write
 
 jobs:
-  verify-authentication:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,13 +26,14 @@ jobs:
           workload_identity_provider: ${workload_identity_provider}
           service_account: ${service_account}
 
-      - name: Set up Google Cloud CLI
-        uses: google-github-actions/setup-gcloud@v3
+      - name: Deploy sample container
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v3
+        with:
+          project_id: ${project_id}
+          region: ${cloud_run_region}
+          service: ${cloud_run_service}
+          image: ${cloud_run_image}
 
-      - name: Verify identity and target project
-        run: |
-          gcloud auth list --filter=status:ACTIVE
-          gcloud projects describe ${project_id} --format='value(projectId)'
-
-# Trusted repository: ${repository}
-# Add build and deployment steps after granting the required roles.
+      - name: Show service URL
+        run: echo "Service URL: ${{ steps.deploy.outputs.url }}"
