@@ -1,0 +1,43 @@
+# Google Cloud project where the Workload Identity Pool, provider and
+# service accounts will be created.
+target_project_id = "my-target-project"
+
+# GitHub user or organization that owns the target repository.
+github_owner = "my-github-organization"
+
+# Repository where the generated GitHub Actions workflows will run.
+github_repository = "my-repository"
+
+# Numeric ID of the GitHub user or organization above.
+# Replace this value with the eventual user's actual GitHub owner ID.
+# Find it at:
+# https://api.github.com/users/GITHUB_OWNER
+# For an organization, use:
+# https://api.github.com/orgs/GITHUB_OWNER
+github_owner_id = "12345678"
+
+# Numeric ID of the target GitHub repository.
+# Replace this value with the actual repository ID.
+# Find it at:
+# https://api.github.com/repos/GITHUB_OWNER/GITHUB_REPOSITORY
+# Use the numeric "id" value, not "node_id".
+github_repository_id = "987654321"
+
+# Only workflows running from this Git reference may authenticate.
+allowed_ref = "refs/heads/main"
+
+# Names assigned to the Google Cloud Workload Identity Pool and provider.
+# These are not existing IDs and normally do not need to be changed.
+pool_id     = "github"
+provider_id = "github"
+
+# Name of the Google Cloud service account that GitHub Actions will impersonate.
+deployment_service_account_id = "github-deployer"
+
+# Google Cloud project roles granted to the deployment service account.
+# roles/browser allows the verification workflow to inspect the target project.
+# roles/run.admin allows the optional workflow to deploy the Cloud Run sample.
+deployment_roles = [
+  "roles/browser",
+  "roles/run.admin"
+]
