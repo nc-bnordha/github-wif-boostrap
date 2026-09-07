@@ -108,11 +108,11 @@ resource "local_file" "verify_workflow" {
   content = templatefile(
     "${path.module}/templates/verify-authentication.yaml.tftpl",
     {
-      project_id                  = var.target_project_id
-      repository                  = local.repository
-      allowed_branch              = trimprefix(var.allowed_ref, "refs/heads/")
+      project_id                 = var.target_project_id
+      repository                 = local.repository
+      allowed_branch             = trimprefix(var.allowed_ref, "refs/heads/")
       workload_identity_provider = google_iam_workload_identity_pool_provider.github.name
-      service_account             = google_service_account.github_deployer.email
+      service_account            = google_service_account.github_deployer.email
     }
   )
 }
@@ -123,15 +123,15 @@ resource "local_file" "cloud_run_workflow" {
   content = templatefile(
     "${path.module}/templates/deploy-cloudrun.yaml.tftpl",
     {
-      project_id                  = var.target_project_id
-      repository                  = local.repository
-      allowed_branch              = trimprefix(var.allowed_ref, "refs/heads/")
+      project_id                 = var.target_project_id
+      repository                 = local.repository
+      allowed_branch             = trimprefix(var.allowed_ref, "refs/heads/")
       workload_identity_provider = google_iam_workload_identity_pool_provider.github.name
-      service_account             = google_service_account.github_deployer.email
-      runtime_service_account     = google_service_account.cloud_run_runtime.email
-      cloud_run_service           = var.cloud_run_service
-      cloud_run_region            = var.cloud_run_region
-      cloud_run_image             = var.cloud_run_image
+      service_account            = google_service_account.github_deployer.email
+      runtime_service_account    = google_service_account.cloud_run_runtime.email
+      cloud_run_service          = var.cloud_run_service
+      cloud_run_region           = var.cloud_run_region
+      cloud_run_image            = var.cloud_run_image
     }
   )
 }
